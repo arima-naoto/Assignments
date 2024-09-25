@@ -4,16 +4,8 @@
 
 #include "imgui.h"
 
+
 const char kWindowTitle[] = "GC1C_02_アリマ_ナオト";
-
-bool StartWave(char* keys, char* preKeys) {
-	if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
-		return true;
-	}
-	return false;
-}
-
-float MoveWave(float wave[3]) { return wave[0] + wave[1] + wave[2]; }
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -23,18 +15,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
-	char preKeys[256] = { 0 };
+	char preKeys[256] = { 0 };	
 
-	float  PositionX = 0;
-	float  PositionY = 360;
-	float Radius = 50;
+	int mouseX = 0;
+	int mouseY = 0;
 
-	float amplitube[3] = {0.0f,0.0f,0.0f};
+	float circlePositionX[3] = {120,360,600};
+	float circlePositionY[3] = {250,350,500};
 
-	float theta = -1;
+	unsigned int color[3] = { WHITE,WHITE,WHITE };
 
-	bool isWave = false;
-	
+	FillMode kFillMode = kFillModeSolid;
+
+	float a[3] = { 0.f,0.f,0.f };
+	float b[3] = { 0.f,0.f,0.f };
+	float c[3] = { 0.f,0.f,0.f };
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -49,23 +44,47 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
-		if (StartWave(keys, preKeys)) {
-			isWave = true;
+		Novice::GetMousePosition(&mouseX, &mouseY);
+
+		ImGui::DragInt("mouse.positionX", &mouseX, 0.01f);
+		ImGui::DragInt("mouse.positionY", &mouseY, 0.01f);
+
+		a[0] = circlePositionX[0] - float(mouseX);
+		b[0] = circlePositionY[0] - float(mouseY);
+
+		c[0] = sqrtf(powf(a[0], 2) + powf(b[0], 2));
+
+		if (c[0] <= 100.0f) {
+			color[0] = RED;
+		}
+		else {
+			color[0] = WHITE;
 		}
 
-		if (isWave) {
-			amplitube[0] = (4 / float(M_PI)) * sinf(theta);
-			amplitube[1] = (4 / (3 * float(M_PI))) * sinf(3 * theta);
-			amplitube[2] = (4 / (5 * float(M_PI))) * sinf(5 * theta);
+		a[1] = circlePositionX[1] - float(mouseX);
+		b[1] = circlePositionY[1] - float(mouseY);
 
-			PositionX += 7.0f;
-			PositionY =  360 + (MoveWave(amplitube)) * 120;
+		c[1] = sqrtf(powf(a[1], 2) + powf(b[1], 2));
 
-			theta += float(M_PI) / 45.0f;
+		if (c[1] <= 100.0f) {
+			color[1] = RED;
+		}
+		else {
+			color[1] = WHITE;
 		}
 
-		ImGui::DragFloat("translateX", &PositionX, 0.01f);
-		ImGui::DragFloat("translateY", &PositionY, 0.01f);
+		a[2] = circlePositionX[2] - float(mouseX);
+		b[2] = circlePositionY[2] - float(mouseY);
+
+		c[2] = sqrtf(powf(a[2], 2) + powf(b[2], 2));
+
+		if (c[2] <= 100.0f) {
+			color[2] = RED;
+		}
+		else {
+			color[2] = WHITE;
+		}
+
 
 		///
 		/// ↑更新処理ここまで
@@ -74,9 +93,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓描画処理ここから
 		///
-
-		Novice::DrawEllipse(int(PositionX), int(PositionY), int(Radius), int(Radius), 0.0f, WHITE, kFillModeSolid);
 	
+		for (int i = 0; i < 3; i++) {
+			Novice::DrawEllipse((int)circlePositionX[i], (int)circlePositionY[i], 100, 100, 0.0f, color[i], kFillMode);
+		}
+
 		///
 		/// ↑描画処理ここまで
 		///
