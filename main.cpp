@@ -1,9 +1,5 @@
 #include <Novice.h>
-#define _USE_MATH_DEFINES
 #include <math.h>
-
-#include "imgui.h"
-
 
 const char kWindowTitle[] = "GC1C_02_アリマ_ナオト";
 
@@ -15,21 +11,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
-	char preKeys[256] = { 0 };	
+	char preKeys[256] = { 0 };
 
-	int mouseX = 0;
-	int mouseY = 0;
+	int posX = 640;
+	int posY = 400;
+	int speedX = 5;
+	int speedY = 5;
 
-	float circlePositionX[3] = {120,360,600};
-	float circlePositionY[3] = {250,350,500};
+	float targetPosX = 400;
+	float targetPosY = 400;
 
-	unsigned int color[3] = { WHITE,WHITE,WHITE };
-
-	FillMode kFillMode = kFillModeSolid;
-
-	float a[3] = { 0.f,0.f,0.f };
-	float b[3] = { 0.f,0.f,0.f };
-	float c[3] = { 0.f,0.f,0.f };
+	unsigned int color = RED;
+	float a = 0;
+	float b = 0;
+	float distance = 0;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -43,60 +38,62 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓更新処理ここから
 		///
+	
+#pragma region プレイヤーの移動処理
 
-		Novice::GetMousePosition(&mouseX, &mouseY);
+		if (keys[DIK_D])
+		{
 
-		ImGui::DragInt("mouse.positionX", &mouseX, 0.01f);
-		ImGui::DragInt("mouse.positionY", &mouseY, 0.01f);
+			posX += speedX;
 
-		a[0] = circlePositionX[0] - float(mouseX);
-		b[0] = circlePositionY[0] - float(mouseY);
+		}
 
-		c[0] = sqrtf(powf(a[0], 2) + powf(b[0], 2));
+		if (keys[DIK_A])
+		{
 
-		if (c[0] <= 100.0f) {
-			color[0] = RED;
+			posX -= speedX;
+
+		}
+
+		if (keys[DIK_W])
+		{
+
+			posY -= speedY;
+
+		}
+
+		if (keys[DIK_S])
+		{
+
+			posY += speedY;
+
+		}
+
+#pragma endregion
+
+		a = targetPosX - (float)posX;
+		b = targetPosY - (float)posY;
+		distance = sqrtf(powf(a, 2) + powf(b, 2));
+		//衝突判定
+		if (distance <= 100 - 50) {
+			color = BLUE;
+
 		}
 		else {
-			color[0] = WHITE;
-		}
-
-		a[1] = circlePositionX[1] - float(mouseX);
-		b[1] = circlePositionY[1] - float(mouseY);
-
-		c[1] = sqrtf(powf(a[1], 2) + powf(b[1], 2));
-
-		if (c[1] <= 100.0f) {
-			color[1] = RED;
-		}
-		else {
-			color[1] = WHITE;
-		}
-
-		a[2] = circlePositionX[2] - float(mouseX);
-		b[2] = circlePositionY[2] - float(mouseY);
-
-		c[2] = sqrtf(powf(a[2], 2) + powf(b[2], 2));
-
-		if (c[2] <= 100.0f) {
-			color[2] = RED;
-		}
-		else {
-			color[2] = WHITE;
+			color = RED;
 		}
 
 
-		///
+
 		/// ↑更新処理ここまで
 		///
 
 		///
 		/// ↓描画処理ここから
 		///
-	
-		for (int i = 0; i < 3; i++) {
-			Novice::DrawEllipse((int)circlePositionX[i], (int)circlePositionY[i], 100, 100, 0.0f, color[i], kFillMode);
-		}
+
+		Novice::DrawEllipse((int)targetPosX, (int)targetPosY, 100, 100, 0.0f, WHITE, kFillModeSolid);
+		Novice::DrawEllipse(posX, posY, 50, 50, 0.0f, color, kFillModeSolid);
 
 		///
 		/// ↑描画処理ここまで
