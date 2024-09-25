@@ -16,6 +16,7 @@
     <ProjectGuid>{891c6c3d-e72a-435d-bb7f-055b11aa4094}</ProjectGuid>
     <RootNamespace>スクリーンで弾を打つ</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>応用課題</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
