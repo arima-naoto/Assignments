@@ -60,10 +60,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
-		if (++timer >= 55) {
+		if (++timer >= 60) {
 			inverse = true;
 
-			if (timer >= 110) {
+			if (timer >= 120) {
 				inverse = false;
 				timer = 0;
 			}
@@ -71,10 +71,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 
 		if (!inverse) {
-			theta -= (1.0f / 256.0f) * float(M_PI);
+			theta -= (1.0f / 394.0f) * float(M_PI);
 		}
 		else {
-			theta += (1.0f / 256.0f) * float(M_PI);
+			theta += (1.0f / 394.0f) * float(M_PI);
 		}
 
 		float newPositionX = positionX * cosf(theta) - positionY * sinf(theta);
