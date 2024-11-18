@@ -1,12 +1,12 @@
 #pragma once
 
-typedef struct Matrix3x3 {
+typedef struct{
 
 	float m[3][3];
 
 }Matrix3x3;
 
-typedef struct Vector2 {
+typedef struct {
 
 	float x;
 	float y;
